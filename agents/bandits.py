@@ -12,7 +12,7 @@ class EpsilonGreedyBandit(BaseAgent):
         self.q_init = 0.
         self.size = 1
         self.Q = None
-        self.policy = None
+        self.policy = epsilon_greedy
         self.epsilon = None
         self.arm_count = None
         self.last_action = None
@@ -22,7 +22,6 @@ class EpsilonGreedyBandit(BaseAgent):
         self.size = agent_info.get('size')
         self.q_init = agent_info.get('q_init')
         self.Q = np.ones(self.n_actions) * self.q_init
-        self.policy = epsilon_greedy
         self.epsilon = agent_info.get('epsilon')
         self.arm_count = [0 for _ in range(self.n_actions)]
         self.last_action = 0
