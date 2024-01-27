@@ -5,6 +5,12 @@ from utils.policy.greedy import epsilon_greedy
 
 
 class EpsilonGreedyBandit(BaseAgent):
+    """Support class for epsilon-greedy bandits
+
+        Note:
+            The step size is always equal to 1. Implement custom step size
+            methods by inheriting from this class.
+    """
 
     def __init__(self):
         super().__init__()
@@ -46,7 +52,11 @@ class EpsilonGreedyBandit(BaseAgent):
         pass
 
     def step_size(self):
-        return 1
+        """Implements the computation of the step size corresponding to the learning step
+
+        :return: (Float) the step size
+        """
+        return 1.
 
 
 class SampleAverageEpsilonGreedyBandit(EpsilonGreedyBandit):

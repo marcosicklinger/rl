@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 
 class BaseAgent(ABC):
     """Implements the agent for an RL-Glue environment.
+
     Note:
         agent_init, agent_start, agent_step, agent_end, agent_cleanup, and
         agent_message are required methods.
