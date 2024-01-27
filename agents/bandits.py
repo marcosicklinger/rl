@@ -10,7 +10,6 @@ class EpsilonGreedyBandit(BaseAgent):
         super().__init__()
         self.n_actions = None
         self.q_init = 0.
-        self.size = 1
         self.Q = None
         self.policy = epsilon_greedy
         self.epsilon = None
@@ -18,11 +17,10 @@ class EpsilonGreedyBandit(BaseAgent):
         self.last_action = None
 
     def agent_init(self, agent_info={}):
-        self.n_actions = agent_info.get('n_actions')
-        self.size = agent_info.get('size')
-        self.q_init = agent_info.get('q_init')
+        self.n_actions = agent_info.get('n_actions', 2)
+        self.q_init = agent_info.get('q_init', 0)
         self.Q = np.ones(self.n_actions) * self.q_init
-        self.epsilon = agent_info.get('epsilon')
+        self.epsilon = agent_info.get('epsilon', 0.1)
         self.arm_count = [0 for _ in range(self.n_actions)]
         self.last_action = 0
 
@@ -32,14 +30,11 @@ class EpsilonGreedyBandit(BaseAgent):
 
     def agent_step(self, reward, observation=None):
         self.arm_count[self.last_action] += 1
-        self.Q[self.last_action] += self.step_size() * [reward - self.Q[self.last_action]]
+        self.Q[self.last_action] += self.step_size()*(reward - self.Q[self.last_action])
 
         self.last_action = current_action = self.policy(self.Q, self.epsilon)
 
         return current_action
-
-    def step_size(self):
-        return 1
 
     def agent_end(self, reward):
         pass
@@ -49,3 +44,26 @@ class EpsilonGreedyBandit(BaseAgent):
 
     def agent_message(self, message):
         pass
+
+    def step_size(self):
+        return 1
+
+
+class SampleAverageEpsilonGreedyBandit(EpsilonGreedyBandit):
+
+    def step_size(self):
+        return 1./self.arm_count[self.last_action]
+
+
+class ConstantStepSizeGreedyBandit(EpsilonGreedyBandit):
+
+    def __init__(self):
+        super().__init__()
+        self.alpha = None
+
+    def agent_init(self, agent_info={}):
+        super().agent_init(agent_info)
+        self.alpha = agent_info.get('step_size', 0.1)
+
+    def step_size(self):
+        return self.alpha
